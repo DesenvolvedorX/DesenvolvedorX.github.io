@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,90 +7,52 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
+        .article {
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
         }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .news-item {
-            background-color: #fff;
-            border-radius: 5px;
-            margin: 10px 0;
-            padding: 15px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .news-item img {
+        .article img {
             max-width: 100%;
-            border-radius: 5px;
-        }
-        .news-item h2 {
-            margin: 10px 0;
-            font-size: 20px;
-            color: #333;
-        }
-        .news-item p {
-            font-size: 16px;
-            color: #666;
+            height: auto;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Últimas Notícias</h1>
-        <div id="news-container"></div>
-    </div>
-    <script>
-        const apiKey = "6cb1daff61e445efbb4d92ba33b29b54";
-        const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
-        
-        async function fetchNews() {
-            try {
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`Erro na resposta da API: ${response.status}`);
-                }
-                
-                const data = await response.json();
-                
-                if (!data.articles || data.articles.length === 0) {
-                    throw new Error('Nenhum artigo encontrado.');
-                }
+    <h1>Últimas Notícias</h1>
+    <div id="news-container"></div>
 
+    <script>
+        const apiKey = '6968d2fca5754ee8b0cec4d28cc519d8';
+        const url = `https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
                 const newsContainer = document.getElementById('news-container');
-                
                 data.articles.forEach(article => {
-                    const newsItem = document.createElement('div');
-                    newsItem.classList.add('news-item');
-                    
-                    const newsImage = document.createElement('img');
-                    newsImage.src = article.urlToImage || 'https://via.placeholder.com/150';
-                    newsItem.appendChild(newsImage);
-                    
-                    const newsTitle = document.createElement('h2');
-                    newsTitle.textContent = article.title || 'Título não disponível';
-                    newsItem.appendChild(newsTitle);
-                    
-                    const newsDescription = document.createElement('p');
-                    newsDescription.textContent = article.description || 'Descrição não disponível';
-                    newsItem.appendChild(newsDescription);
-                    
-                    newsContainer.appendChild(newsItem);
+                    const articleElement = document.createElement('div');
+                    articleElement.className = 'article';
+
+                    const title = document.createElement('h2');
+                    title.textContent = article.title;
+                    articleElement.appendChild(title);
+
+                    const img = document.createElement('img');
+                    img.src = article.urlToImage;
+                    img.alt = article.title;
+                    articleElement.appendChild(img);
+
+                    const description = document.createElement('p');
+                    description.textContent = article.description;
+                    articleElement.appendChild(description);
+
+                    newsContainer.appendChild(articleElement);
                 });
-            } catch (error) {
+            })
+            .catch(error => {
                 console.error('Erro ao buscar notícias:', error);
-            }
-        }
-        
-        fetchNews();
+            });
     </script>
 </body>
 </html>
