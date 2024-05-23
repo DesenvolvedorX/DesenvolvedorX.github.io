@@ -54,7 +54,17 @@
         async function fetchNews() {
             try {
                 const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro na resposta da API: ${response.status}`);
+                }
+                
                 const data = await response.json();
+                
+                if (!data.articles || data.articles.length === 0) {
+                    throw new Error('Nenhum artigo encontrado.');
+                }
+
                 const newsContainer = document.getElementById('news-container');
                 
                 data.articles.forEach(article => {
@@ -66,11 +76,11 @@
                     newsItem.appendChild(newsImage);
                     
                     const newsTitle = document.createElement('h2');
-                    newsTitle.textContent = article.title;
+                    newsTitle.textContent = article.title || 'Título não disponível';
                     newsItem.appendChild(newsTitle);
                     
                     const newsDescription = document.createElement('p');
-                    newsDescription.textContent = article.description;
+                    newsDescription.textContent = article.description || 'Descrição não disponível';
                     newsItem.appendChild(newsDescription);
                     
                     newsContainer.appendChild(newsItem);
